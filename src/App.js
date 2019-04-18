@@ -1,21 +1,28 @@
 import React, {Component} from 'react';
 import './App.css';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+// import Table from '@material-ui/core/Table';
+// import TableBody from '@material-ui/core/TableBody';
+// import TableCell from '@material-ui/core/TableCell';
+// import TableHead from '@material-ui/core/TableHead';
+// import TableRow from '@material-ui/core/TableRow';
+
+import Sheet from './components/Sheet.js';
+import Greet from './components/Greet.js';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      gapiLoaded: false,
+      isSignedIn: false,
+      sheetId: '',
+      sheetName: '',
       values: [],
     };
-
     this.loadSheetsApi = this.loadSheetsApi.bind(this);
-    this.listMajors = this.listMajors.bind(this);
+    this.setAuthRight = this.setAuthRight.bind(this);
   }
 
   loadSheetsApi() {
@@ -38,9 +45,11 @@ class App extends Component {
             })
             .then(() => {
               console.log('hey, gapi is initialized and ready to use.');
-              window.gapi.client.sheets
-                ? this.listMajors()
-                : console.log('waiting');
+              this.setState({gapiLoaded: true});
+              this.setAuthRight();
+              //window.gapi.client.sheets
+              // ? null //this.listMajors()
+              console.log('waiting');
             });
         },
         error => console.log(error),
@@ -50,79 +59,89 @@ class App extends Component {
     console.log('take the script .', script);
   }
 
-  listMajors() {
-    if (window.gapi.client.sheets) {
-      window.gapi.client.sheets.spreadsheets.values
-        .get({
-          spreadsheetId: '1D5uF_gHrevGNDLhlgVWK83FAa9Jg09c6f_MCXCIf1ww',
-          range: 'F15!A:AR',
-        })
-        .then(
-          response => {
-            console.log(response);
-            this.setState({values: response.result.values});
-          },
-          response => {
-            console.log(response);
-          },
-        );
-      console.log(window.gapi);
-    } else {
-      console.log("sheets havn't arrived yet");
+  setAuthRight() {
+    if (this.state.gapiLoaded) {
+      if (
+        window.gapi.auth2.getAuthInstance().isSignedIn.get() !==
+        this.state.isSignedIn
+      ) {
+        console.log('toggling . .');
+        this.setState({
+          isSignedIn: window.gapi.auth2.getAuthInstance().isSignedIn.get(),
+        });
+      }
     }
+  }
+
+  componentDidUpdate() {
+    console.log('did update ... . .');
+    this.setAuthRight();
   }
 
   componentDidMount() {
+    // this.setState({sheetsId: '1D5uF_gHrevGNDLhlgVWK83FAa9Jg09c6f_MCXCIf1ww'});
     this.loadSheetsApi();
   }
 
-  render() {
-    console.log(this.state.values);
-    const values = this.state.values.slice();
-    // get max columns:
-    let max_columns = 0;
-    for (var i = 0; i < values.length; i++) {
-      if (max_columns < values[i].length) {
-        max_columns = values[i].length;
-      }
+  async toggleSignedIn() {
+    if (window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
+      console.log('Signing out...');
+      await window.gapi.auth2.getAuthInstance().signOut();
+      this.setAuthRight();
+    } else {
+      console.log('Signing in...');
+      await window.gapi.auth2.getAuthInstance().signIn();
+      this.setAuthRight();
     }
-    let paddedValues = [];
-    values.forEach((value, i) => {
-      if (value.length < max_columns) {
-        let padArr = Array(max_columns - value.length).fill('');
-        value = [...value, ...padArr];
-        paddedValues.push(value);
-      } else {
-        paddedValues.push(value);
-      }
-    });
-    console.log(paddedValues);
+  }
+
+  render() {
     return (
-      <div className="App">
-        <Table>
-          {this.state.values.length
-            ? paddedValues.map((value, i) => {
-                return i < 11 && i > 8 ? (
-                  <TableHead>
-                    <TableRow>
-                      {value.map(str => (
-                        <TableCell>{str}&nbsp;</TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                ) : i > 8 ? (
-                  <TableBody>
-                    <TableRow>
-                      {value.map(str => (
-                        <TableCell>{str}&nbsp;</TableCell>
-                      ))}
-                    </TableRow>
-                  </TableBody>
-                ) : null;
-              })
-            : null}
-        </Table>
-      </div>
+      <Router>
+        <div className="App">
+          <ul>
+            <li>
+              <span
+                style={{
+                  color: 'blue',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  this.toggleSignedIn();
+                }}>
+                {!this.state.isSignedIn ? 'Sign In' : 'Sign Out'}
+              </span>
+            </li>
+            <li>
+              <Link to="/greet/">Greet Me</Link>
+            </li>
+            <li>
+              <Link to="/sheet/">Show Sheet</Link>
+            </li>
+          </ul>
+          <Route
+            exact
+            path="/greet/"
+            render={() => (
+              <Greet
+                sheetId={id => this.setState({sheetId: id})}
+                sheetName={name => this.setState({sheetName: name})}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/sheet/"
+            render={() => (
+              <Sheet
+                sheetId={this.state.sheetId}
+                sheetName={this.state.sheetName}
+              />
+            )}
+          />
+        </div>
+      </Router>
     );
   }
 }

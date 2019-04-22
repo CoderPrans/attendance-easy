@@ -5,6 +5,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import {Fab, Modal, Paper} from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 
 import {Redirect} from 'react-router-dom';
 
@@ -13,6 +15,8 @@ class Sheet extends Component {
     super(props);
     this.state = {
       values: [],
+      students: [],
+      modalOpen: false,
     };
     this.listMajors = this.listMajors.bind(this);
   }
@@ -35,6 +39,12 @@ class Sheet extends Component {
           response => {
             console.log(response);
             this.setState({values: response.result.values});
+            let batchId = response.result.values[13][1].slice(0, 3);
+            let students = this.state.values.filter(
+              arr => arr[1] && arr[1].slice(0, 3) === batchId,
+            );
+            console.log(students);
+            this.setState({students});
           },
           response => {
             console.log(response);
@@ -100,6 +110,31 @@ class Sheet extends Component {
             <p>Please Set Sheet Id, first !</p>
           )}
         </Table>
+        <Fab
+          color="primary"
+          aria-label="edit"
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '30px',
+          }}
+          onClick={() =>
+            !this.state.modalOpen ? this.setState({modalOpen: true}) : null
+          }>
+          <EditIcon />
+        </Fab>
+        <Modal
+          open={this.state.modalOpen}
+          onClose={() => this.setState({modalOpen: false})}
+          style={{
+            width: '280px',
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Paper style={{padding: '30px'}}>Hello are you okay out there.</Paper>
+        </Modal>
       </div>
     );
   }

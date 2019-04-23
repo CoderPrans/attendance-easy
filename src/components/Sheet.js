@@ -5,7 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import {Fab, Modal, Paper} from '@material-ui/core';
+import {Fab, Modal, Paper, TextField, Button} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
 import {Redirect} from 'react-router-dom';
@@ -15,8 +15,11 @@ class Sheet extends Component {
     super(props);
     this.state = {
       values: [],
+      paddedValues: [],
       students: [],
       modalOpen: false,
+      presentInput: '',
+      presentStudents: [],
     };
     this.listMajors = this.listMajors.bind(this);
   }
@@ -45,6 +48,25 @@ class Sheet extends Component {
             );
             console.log(students);
             this.setState({students});
+            const values = this.state.values.slice();
+            // get max columns:
+            let max_columns = 0;
+            for (var i = 0; i < values.length; i++) {
+              if (max_columns < values[i].length) {
+                max_columns = values[i].length;
+              }
+            }
+            let paddedValues = [];
+            values.forEach((value, i) => {
+              if (value.length < max_columns) {
+                let padArr = Array(max_columns - value.length).fill('');
+                value = [...value, ...padArr];
+                paddedValues.push(value);
+              } else {
+                paddedValues.push(value);
+              }
+            });
+            this.setState({paddedValues});
           },
           response => {
             console.log(response);
@@ -57,26 +79,6 @@ class Sheet extends Component {
   }
 
   render() {
-    console.log(this.state.values);
-    const values = this.state.values.slice();
-    // get max columns:
-    let max_columns = 0;
-    for (var i = 0; i < values.length; i++) {
-      if (max_columns < values[i].length) {
-        max_columns = values[i].length;
-      }
-    }
-    let paddedValues = [];
-    values.forEach((value, i) => {
-      if (value.length < max_columns) {
-        let padArr = Array(max_columns - value.length).fill('');
-        value = [...value, ...padArr];
-        paddedValues.push(value);
-      } else {
-        paddedValues.push(value);
-      }
-    });
-    console.log(paddedValues);
     return (
       <div className="App">
         <hr />
@@ -85,7 +87,7 @@ class Sheet extends Component {
           : null}
         <Table>
           {this.state.values.length ? (
-            paddedValues.map((value, i) => {
+            this.state.paddedValues.map((value, i) => {
               return i < 11 && i > 8 ? (
                 <TableHead>
                   <TableRow>
@@ -133,7 +135,23 @@ class Sheet extends Component {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Paper style={{padding: '30px'}}>Hello are you okay out there.</Paper>
+          <Paper style={{padding: '30px'}}>
+            Hello are you okay out there.
+            <br />
+            <br />
+            <TextField
+              label="Present"
+              onChange={e => {
+                this.setState({presentInput: e.target.value});
+              }}
+              value={this.state.presentInput}
+            />
+            <br />
+            <br />
+            <Button variant="contained" color="primary">
+              Enter
+            </Button>
+          </Paper>
         </Modal>
       </div>
     );

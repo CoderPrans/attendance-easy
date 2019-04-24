@@ -18,16 +18,25 @@ class Sheet extends Component {
       paddedValues: [],
       students: [],
       modalOpen: false,
-      presentInput: '',
       presentStudents: [],
+      presentInput: '',
     };
     this.listMajors = this.listMajors.bind(this);
+    this.markAttendance = this.markAttendance.bind(this);
   }
 
   componentDidMount() {
     // this.setState({sheetsId: '1D5uF_gHrevGNDLhlgVWK83FAa9Jg09c6f_MCXCIf1ww'});
     if (window.gapi) {
       this.listMajors();
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.state.presentStudents.length > 0) {
+      let presentee = [];
+      this.state.presentStudents.forEach(roll => presentee.push(`BEE${roll}`));
+      this.markAttendance(presentee);
     }
   }
 
@@ -76,6 +85,10 @@ class Sheet extends Component {
     } else {
       console.log("sheets havn't arrived yet");
     }
+  }
+
+  markAttendance(arr) {
+    console.log(arr);
   }
 
   render() {
@@ -136,9 +149,7 @@ class Sheet extends Component {
             alignItems: 'center',
           }}>
           <Paper style={{padding: '30px'}}>
-            Hello are you okay out there.
-            <br />
-            <br />
+            <p>{new Date().toString().slice(0, 15)}</p>
             <TextField
               label="Present"
               onChange={e => {
@@ -148,7 +159,14 @@ class Sheet extends Component {
             />
             <br />
             <br />
-            <Button variant="contained" color="primary">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                let input = this.state.presentInput;
+                let presentNumbers = input.split(',');
+                this.setState({presentStudents: presentNumbers});
+              }}>
               Enter
             </Button>
           </Paper>

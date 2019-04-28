@@ -20,6 +20,7 @@ class Sheet extends Component {
       modalOpen: false,
       presentStudents: [],
       presentInput: '',
+      batchId: '',
     };
     this.listMajors = this.listMajors.bind(this);
     this.markAttendance = this.markAttendance.bind(this);
@@ -35,7 +36,11 @@ class Sheet extends Component {
   componentDidUpdate() {
     if (this.state.presentStudents.length > 0) {
       let presentee = [];
-      this.state.presentStudents.forEach(roll => presentee.push(`BEE${roll}`));
+      this.state.presentStudents.forEach(roll =>
+        presentee.push(
+          `${this.state.batchId}${roll.length === 2 ? roll : `0${roll}`}`,
+        ),
+      );
       this.markAttendance(presentee);
     }
   }
@@ -55,7 +60,8 @@ class Sheet extends Component {
             let students = this.state.values.filter(
               arr => arr[1] && arr[1].slice(0, 3) === batchId,
             );
-            console.log(students);
+            this.setState({batchId});
+            console.log('students', students);
             this.setState({students});
             const values = this.state.values.slice();
             // get max columns:
@@ -66,13 +72,14 @@ class Sheet extends Component {
               }
             }
             let paddedValues = [];
-            values.forEach((value, i) => {
-              if (value.length < max_columns) {
-                let padArr = Array(max_columns - value.length).fill('');
-                value = [...value, ...padArr];
-                paddedValues.push(value);
+            let studentsArr = this.state.students.slice();
+            studentsArr.forEach((student, i) => {
+              if (student.length < max_columns) {
+                let padArr = Array(max_columns - student.length).fill('');
+                student = [...student, ...padArr];
+                paddedValues.push(student);
               } else {
-                paddedValues.push(value);
+                paddedValues.push(student);
               }
             });
             this.setState({paddedValues});
@@ -87,8 +94,45 @@ class Sheet extends Component {
     }
   }
 
-  markAttendance(arr) {
-    console.log(arr);
+  markAttendance(presentee) {
+    console.log(presentee);
+    // you have the roll no. of the present students.
+    // and you have the returned value to edit.
+    // on the present day column. add 1 for present
+    // and 0 for absent.
+    // check if the presentStudents.indexOf(arr[1]) > 0
+    // check indices of student rows.
+    let values = this.state.values.slice();
+    this.state.values.forEach((arr, i) => {
+      if (
+        arr[1] &&
+        presentee.indexOf(arr[1]) >= 0 &&
+        arr[1].slice(0, 3) === this.state.batchId
+      ) {
+        arr.push(1);
+      } else if (
+        arr[1] &&
+        presentee.indexOf(arr[1]) < 0 &&
+        arr[1].slice(0, 3) === this.state.batchId
+      ) {
+        arr.push(0);
+      }
+    });
+    console.log(this.props.sheetId);
+    console.log(values);
+    if (window.gapi.client.sheets) {
+      window.gapi.client.sheets.spreadsheets.values
+        .update({
+          spreadsheetId: this.props.sheetId,
+          range: `${this.props.sheetName}!A:AR`, // range
+          valueInputOption: 'USER_ENTERED', // valueInputOption
+          resource: {values}, // body = { values }
+        })
+        .then(res => console.log(res, 'things done !'));
+    }
+    if (this.state.presentStudents.length > 0) {
+      this.setState({presentStudents: []});
+    }
   }
 
   render() {
@@ -101,15 +145,7 @@ class Sheet extends Component {
         <Table>
           {this.state.values.length ? (
             this.state.paddedValues.map((value, i) => {
-              return i < 11 && i > 8 ? (
-                <TableHead>
-                  <TableRow>
-                    {value.map(str => (
-                      <TableCell>{str}&nbsp;</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-              ) : i > 8 ? (
+              return (
                 <TableBody>
                   <TableRow>
                     {value.map(str => (
@@ -117,7 +153,7 @@ class Sheet extends Component {
                     ))}
                   </TableRow>
                 </TableBody>
-              ) : null;
+              );
             })
           ) : this.props.sheetId.length ? (
             <p>Loading.... !!!</p>
@@ -166,6 +202,8 @@ class Sheet extends Component {
                 let input = this.state.presentInput;
                 let presentNumbers = input.split(',');
                 this.setState({presentStudents: presentNumbers});
+                this.setState({modalOpen: false});
+                this.listMajors();
               }}>
               Enter
             </Button>

@@ -109,7 +109,7 @@ class App extends Component {
                   color: 'black',
                 }}>
                 <Button variant="contained" style={{margin: '0 12px'}}>
-                  Greet Me
+                  Set Sheet
                 </Button>
               </Link>
               <Link

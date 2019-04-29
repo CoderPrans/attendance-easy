@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
+//import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import {Fab, Modal, Paper, TextField, Button} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -94,7 +94,7 @@ class Sheet extends Component {
     }
   }
 
-  markAttendance(presentee) {
+  async markAttendance(presentee) {
     console.log(presentee);
     // you have the roll no. of the present students.
     // and you have the returned value to edit.
@@ -121,7 +121,7 @@ class Sheet extends Component {
     console.log(this.props.sheetId);
     console.log(values);
     if (window.gapi.client.sheets) {
-      window.gapi.client.sheets.spreadsheets.values
+      await window.gapi.client.sheets.spreadsheets.values
         .update({
           spreadsheetId: this.props.sheetId,
           range: `${this.props.sheetName}!A:AR`, // range
@@ -133,6 +133,8 @@ class Sheet extends Component {
     if (this.state.presentStudents.length > 0) {
       this.setState({presentStudents: []});
     }
+    this.setState({values: []});
+    this.listMajors();
   }
 
   render() {
@@ -203,7 +205,6 @@ class Sheet extends Component {
                 let presentNumbers = input.split(',');
                 this.setState({presentStudents: presentNumbers});
                 this.setState({modalOpen: false});
-                this.listMajors();
               }}>
               Enter
             </Button>

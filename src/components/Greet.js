@@ -21,6 +21,7 @@ class Greet extends Component {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            paddingTop: '120px',
           }}>
           <Paper
             style={{

@@ -137,7 +137,7 @@ class Sheet extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="App" style={{paddingTop: '90px'}}>
         <hr />
         {!window.gapi
           ? (alert('Please set Sheet Id'), <Redirect to="/greet/" />)

@@ -10,6 +10,7 @@ import './App.css';
 import Sheet from './components/Sheet.js';
 import Greet from './components/Greet.js';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {AppBar, Toolbar, Button} from '@material-ui/core';
 
 class App extends Component {
   constructor(props) {
@@ -99,27 +100,51 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <ul>
-            <li>
-              <span
+          <AppBar style={{backgroundColor: '#2196F3'}}>
+            <Toolbar style={{display: 'flex', justifyContent: 'flex-end'}}>
+              <Link
+                to="/greet/"
                 style={{
-                  color: 'blue',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                }}
+                  textDecoration: 'none',
+                  color: 'black',
+                }}>
+                <Button variant="contained" style={{margin: '0 12px'}}>
+                  Greet Me
+                </Button>
+              </Link>
+              <Link
+                to="/sheet/"
+                style={{
+                  textDecoration: 'none',
+                  color: 'black',
+                }}>
+                <Button
+                  variant="contained"
+                  color="default"
+                  style={{margin: '0 12px'}}>
+                  Show Sheet
+                </Button>
+              </Link>
+              <Button
+                variant="contained"
+                color="default"
+                style={{margin: '0 12px'}}
                 onClick={() => {
                   this.toggleSignedIn();
                 }}>
-                {!this.state.isSignedIn ? 'Sign In' : 'Sign Out'}
-              </span>
-            </li>
-            <li>
-              <Link to="/greet/">Greet Me</Link>
-            </li>
-            <li>
-              <Link to="/sheet/">Show Sheet</Link>
-            </li>
-          </ul>
+                <span
+                  style={{
+                    color: 'blue',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    color: 'black',
+                  }}>
+                  {!this.state.isSignedIn ? 'Sign In' : 'Sign Out'}
+                </span>
+              </Button>
+            </Toolbar>
+          </AppBar>
           <Route
             exact
             path="/greet/"

@@ -49,6 +49,7 @@ class Greet extends Component {
             <Button
               variant="outlined"
               color="primary"
+              disabled={!this.props.isSignedIn}
               onClick={async () => {
                 if (this.state.sheetId.length) {
                   await this.props.sheetId(this.state.sheetId);
@@ -59,7 +60,7 @@ class Greet extends Component {
                   alert('Sheet Id !!!');
                 }
               }}>
-              Save id
+              Save
             </Button>
           </Paper>
         </div>

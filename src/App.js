@@ -1,12 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
 
-// import Table from '@material-ui/core/Table';
-// import TableBody from '@material-ui/core/TableBody';
-// import TableCell from '@material-ui/core/TableCell';
-// import TableHead from '@material-ui/core/TableHead';
-// import TableRow from '@material-ui/core/TableRow';
-
 import Sheet from './components/Sheet.js';
 import Greet from './components/Greet.js';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
@@ -102,39 +96,35 @@ class App extends Component {
         <div className="App">
           <AppBar style={{backgroundColor: '#2196F3'}}>
             <Toolbar className="toolbar">
-              <Link
-                to="/"
-                style={{
-                  textDecoration: 'none',
-                  color: 'black',
-                }}>
-                <Button variant="contained" style={{margin: '0 12px'}}>
-                  Set Sheet
+              <Link to="/" style={{textDecoration: 'none'}}>
+                <Button
+                  variant="contained"
+                  style={{margin: '0 12px', backgroundColor: 'white'}}>
+                  <span style={{color: '#727272'}}>Set Sheet</span>
                 </Button>
               </Link>
               <Link
                 to="/sheet/"
                 style={{
                   textDecoration: 'none',
-                  color: 'black',
                 }}>
                 <Button
                   variant="contained"
                   color="default"
-                  style={{margin: '0 12px'}}>
-                  Show Sheet
+                  style={{margin: '0 12px', backgroundColor: 'white'}}>
+                  <span style={{color: '#727272'}}>Show Sheet</span>
                 </Button>
               </Link>
               <Button
                 variant="contained"
                 color="default"
-                style={{margin: '0 12px'}}
+                style={{margin: '0 12px', backgroundColor: 'white'}}
                 onClick={() => {
                   this.toggleSignedIn();
                 }}>
                 <span
                   style={{
-                    color: 'black',
+                    color: '#727272',
                     textDecoration: 'none',
                     cursor: 'pointer',
                   }}>
@@ -150,6 +140,7 @@ class App extends Component {
               <Greet
                 sheetId={id => this.setState({sheetId: id})}
                 sheetName={name => this.setState({sheetName: name})}
+                isSignedIn={this.state.isSignedIn}
               />
             )}
           />

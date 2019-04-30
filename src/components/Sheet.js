@@ -73,6 +73,8 @@ class Sheet extends Component {
               }
             }
             let paddedValues = [];
+            paddedValues.push(this.state.values[9]);
+            paddedValues.push(this.state.values[10]);
             let studentsArr = this.state.students.slice();
             studentsArr.forEach((student, i) => {
               if (student.length < max_columns) {
@@ -140,7 +142,14 @@ class Sheet extends Component {
 
   render() {
     return (
-      <div className="App" style={{paddingTop: '90px'}}>
+      <div
+        className="App"
+        style={{
+          paddingTop: '90px',
+          width: '90vw',
+          margin: '0 auto',
+          overflowX: 'auto',
+        }}>
         {!window.gapi
           ? (alert('Please set Sheet Id'), <Redirect to="/" />)
           : null}
@@ -172,6 +181,7 @@ class Sheet extends Component {
             position: 'fixed',
             bottom: '20px',
             right: '30px',
+            backgroundColor: '#2196F3',
           }}
           onClick={() =>
             !this.state.modalOpen ? this.setState({modalOpen: true}) : null

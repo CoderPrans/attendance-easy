@@ -101,7 +101,7 @@ class App extends Component {
       <Router>
         <div className="App">
           <AppBar style={{backgroundColor: '#2196F3'}}>
-            <Toolbar style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Toolbar className="toolbar">
               <Link
                 to="/"
                 style={{

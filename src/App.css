@@ -7,3 +7,13 @@ body {
 .App {
   text-align: left;
 }
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+@media only screen and (max-width: 420px) {
+  .toolbar {
+    height: 90px;
+  }
+}

@@ -134,11 +134,9 @@ class App extends Component {
                 }}>
                 <span
                   style={{
-                    color: 'blue',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                    textDecoration: 'none',
                     color: 'black',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
                   }}>
                   {!this.state.isSignedIn ? 'Sign In' : 'Sign Out'}
                 </span>

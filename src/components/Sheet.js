@@ -45,9 +45,9 @@ class Sheet extends Component {
     }
   }
 
-  listMajors() {
+  async listMajors() {
     if (window.gapi.client.sheets) {
-      window.gapi.client.sheets.spreadsheets.values
+      await window.gapi.client.sheets.spreadsheets.values
         .get({
           spreadsheetId: this.props.sheetId,
           range: `${this.props.sheetName}!A:AR`,

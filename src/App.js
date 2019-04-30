@@ -103,7 +103,7 @@ class App extends Component {
           <AppBar style={{backgroundColor: '#2196F3'}}>
             <Toolbar style={{display: 'flex', justifyContent: 'flex-end'}}>
               <Link
-                to="/greet/"
+                to="/"
                 style={{
                   textDecoration: 'none',
                   color: 'black',
@@ -147,7 +147,7 @@ class App extends Component {
           </AppBar>
           <Route
             exact
-            path="/greet/"
+            path="/"
             render={() => (
               <Greet
                 sheetId={id => this.setState({sheetId: id})}

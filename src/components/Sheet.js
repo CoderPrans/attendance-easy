@@ -5,6 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 //import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import {Fab, Modal, Paper, TextField, Button} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -140,9 +141,8 @@ class Sheet extends Component {
   render() {
     return (
       <div className="App" style={{paddingTop: '90px'}}>
-        <hr />
         {!window.gapi
-          ? (alert('Please set Sheet Id'), <Redirect to="/greet/" />)
+          ? (alert('Please set Sheet Id'), <Redirect to="/" />)
           : null}
         <Table>
           {this.state.values.length ? (
@@ -158,9 +158,11 @@ class Sheet extends Component {
               );
             })
           ) : this.props.sheetId.length ? (
-            <p>Loading.... !!!</p>
+            <LinearProgress />
           ) : (
-            <p>Please Set Sheet Id, first !</p>
+            <p style={{fontSize: '35px', padding: '50px'}}>
+              Please Set Sheet Id, first !
+            </p>
           )}
         </Table>
         <Fab

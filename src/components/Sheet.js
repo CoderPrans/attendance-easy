@@ -121,6 +121,9 @@ class Sheet extends Component {
         arr.push(0);
       }
     });
+    values[9][
+      values[11].length - 1
+    ] = `${new Date().getDate()}/${new Date().getMonth()}`;
     console.log(this.props.sheetId);
     console.log(values);
     if (window.gapi.client.sheets) {

@@ -123,7 +123,7 @@ class Sheet extends Component {
     });
     values[9][
       values[11].length - 1
-    ] = `${new Date().getDate()}/${new Date().getMonth()}`;
+    ] = `${new Date().getDate()}/${new Date().getMonth() + 1}`;
     console.log(this.props.sheetId);
     console.log(values);
     if (window.gapi.client.sheets) {
